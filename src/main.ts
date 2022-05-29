@@ -1,10 +1,19 @@
+import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { PORT } from './common/config';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000, () => {
-    console.log('Server is listening on PORT = 3000');
+let app: INestApplication;
+
+export async function bootstrap(PORT) {
+  app = await NestFactory.create(AppModule);
+  await app.listen(PORT, () => {
+    console.log(`Server is listening on PORT = ${PORT}`);
   });
 }
-bootstrap();
+
+export async function appClose() {
+  await app.close();
+}
+
+bootstrap(PORT);

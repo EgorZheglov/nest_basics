@@ -1,16 +1,62 @@
 import { Injectable } from '@nestjs/common';
+import { to } from 'await-to-js';
+import { UpdateResult } from 'typeorm';
+import CreateUserDto from './dto/create-user.dto';
+import UpdateUserDto from './dto/update-user.dto';
+import User from './user.model';
+import * as bcrypt from 'bcrypt';
+import { SALT_OR_ROUNDS } from 'src/common/config';
 
 @Injectable()
 export class UsersService {
-  getUsers(): string {
-    return '/Get users result';
+  async getUsers(): Promise<User[]> {
+    const [err, users] = await to(User.find({ relations: ['tasks'] }));
+
+    if (err) throw err;
+
+    return users;
   }
 
-  getUser(id: string): string {
-    return '/get by id ' + id;
+  async findByLogin(login: string) {}
+
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const user = User.create(createUserDto);
+
+    await User.save(user);
+
+    return user;
   }
 
-  deleteUser(id: string): string {
-    return '/delete user with id ' + id;
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UpdateResult> {
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(
+        updateUserDto.password,
+        SALT_OR_ROUNDS,
+      );
+    }
+    const board = await User.update({ id: id }, updateUserDto);
+
+    return board;
+  }
+
+  async getUser(id: string): Promise<User> {
+    const [err, user] = await to(
+      User.findOne({ where: { id: id }, relations: ['tasks'] }),
+    );
+
+    if (err) throw err;
+
+    return user;
+  }
+
+  async deleteUser(id: string): Promise<string> {
+    const [err, result] = await to(User.delete(id));
+
+    if (err) throw err;
+
+    return 'deleted';
   }
 }
