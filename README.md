@@ -45,7 +45,7 @@ soon different roles & rights will be added.
 
 ## expressJs
 You can also try version of this project using pure express.js & typescrypt:
-(https://github.com/EgorZheglov/Typescipt_basics)
+https://github.com/EgorZheglov/Typescipt_basics
 
 
 ## Support
