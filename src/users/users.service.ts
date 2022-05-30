@@ -17,7 +17,15 @@ export class UsersService {
     return users;
   }
 
-  async findByLogin(login: string) {}
+  async findByLogin(login: string): Promise<User> {
+    const [err, result] = await to(User.findOne({ login: login }));
+
+    if (!result) throw 'not found';
+
+    if (err) throw err;
+
+    return result;
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const user = User.create(createUserDto);
