@@ -24,6 +24,6 @@ export class AuthController {
 
     if (err) return err;
 
-    return result;
+    return { access_token: result };
   }
 }

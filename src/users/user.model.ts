@@ -5,7 +5,6 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   BeforeInsert,
-  BeforeUpdate,
 } from 'typeorm';
 import Task from '../tasks/task.model';
 import * as bcrypt from 'bcrypt';

@@ -16,3 +16,6 @@ export const POSTGRES_DB = process.env.POSTGRES_DB;
 export const SALT_OR_ROUNDS = process.env.SALT_OR_ROUNDS
   ? process.env.SALT_OR_ROUNDS
   : 10;
+export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
+  ? process.env.JWT_SECRET_KEY
+  : 'secret';

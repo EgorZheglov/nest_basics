@@ -7,18 +7,20 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import to from 'await-to-js';
 import CreateTaskDto from './dto/task-create.dto';
-import UpdateBoa from 'src/boards/dto/update-board.dto';
 import { TasksService } from './tasks.service';
 import UpdateTaskDto from './dto/task-update.dto';
+import AuthGuard from 'src/auth/auth.guard';
 
 @Controller('/boards/:boardId/tasks')
 export class TasksController {
   constructor(private readonly taskService: TasksService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   async getTasks(@Param() params) {
     const [err, result] = await to(this.taskService.getTasks(params.boardId));
 
@@ -28,6 +30,7 @@ export class TasksController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   async getTask(@Param() params) {
     const result = await this.taskService.getTask(params.boardId, params.id);
 
@@ -35,6 +38,7 @@ export class TasksController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   async deleteTask(@Param() params) {
     const [err, result] = await to(
@@ -48,6 +52,7 @@ export class TasksController {
 
   @Post()
   @HttpCode(201)
+  @UseGuards(AuthGuard)
   async createTask(@Param() params, @Body() createTaskDto: CreateTaskDto) {
     createTaskDto.board = params.boardId;
     const [err, task] = await to(this.taskService.createTask(createTaskDto));
@@ -58,6 +63,7 @@ export class TasksController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   async updateTask(@Param() params, @Body() updateTaskDto: UpdateTaskDto) {
     const [err, task] = await to(
       this.taskService.updateTask(updateTaskDto, params.boardId, params.id),

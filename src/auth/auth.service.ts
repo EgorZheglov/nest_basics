@@ -6,10 +6,14 @@ import User from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import LoginUserDto from './dto/login-user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   async sigunp(createUserDto: CreateUserDto): Promise<User> {
     const [err, result] = await to(this.userService.createUser(createUserDto));
@@ -34,9 +38,6 @@ export class AuthService {
       throw errmessages.ERROR_LOGIN;
     }
 
-    //TODO:
-    //generate jwt token
-
-    return 'logged in';
+    return this.jwtService.sign(result.id);
   }
 }
